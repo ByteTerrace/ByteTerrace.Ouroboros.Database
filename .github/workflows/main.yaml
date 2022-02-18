@@ -1,0 +1,41 @@
+name: 'ByteTerrace.Ouroboros.Database'
+on:
+  workflow_dispatch:
+    inputs:
+      buildConfiguration:
+        description: 'Build Configuration'
+        default: 'Release'
+        options:
+        - Release
+        required: true
+        type: choice
+      buildVerbosity:
+        description: 'Build Verbosity'
+        default: 'minimal'
+        options:
+        - minimal
+        required: true
+        type: choice
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'checkout ByteTerrace.Ouroboros.Database repository'
+        uses: 'actions/checkout@v2'
+        with:
+          clean: true
+          fetch-depth: 1
+          lfs: false
+          path: '${{ github.workspace }}/project'
+          submodules: false
+      - name: 'setup .NET SDK ${{ matrix.dotnet-version }}'
+        uses: 'actions/setup-dotnet@v1'
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: 'run .NET restore'
+        run: 'dotnet restore'
+      - name: 'run .NET build'
+        run: 'dotnet --configuration ${{ github.event.inputs.buildConfiguration }} --no-restore --verbosity ${{ github.event.inputs.buildVerbosity }}'
+    strategy:
+      matrix:
+        dotnet-version: ['6.x']

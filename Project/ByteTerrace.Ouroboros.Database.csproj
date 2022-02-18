@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
         <AssemblyOriginatorKeyFile>ByteTerrace.Ouroboros.Database.snk</AssemblyOriginatorKeyFile>
         <Authors>ByteTerrace</Authors>
         <Company>ByteTerrace</Company>
-        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
         <Copyright>Copyright ©2022 ByteTerrace</Copyright>
         <DebugType>portable</DebugType>
         <DelaySign>false</DelaySign>
@@ -24,10 +23,18 @@
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <RepositoryUrl>https://github.com/ByteTerrace/ByteTerrace.Ouroboros.Database</RepositoryUrl>
-        <SignAssembly>True</SignAssembly>
+        <SignAssembly>true</SignAssembly>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <TargetFrameworks>net6.0</TargetFrameworks>
-        <Version>1.0.0-preview2</Version>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <Version>1.0.0-preview3</Version>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <DebugType>pdbonly</DebugType>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="[6.*,7)" />
