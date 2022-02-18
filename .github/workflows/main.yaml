@@ -26,22 +26,23 @@ jobs:
           clean: true
           fetch-depth: 1
           lfs: false
+          path: '${{ github.workspace }}/bytrc'
           submodules: false
       - name: 'setup .NET SDK ${{ matrix.dotnet-version }}'
         uses: 'actions/setup-dotnet@v1'
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: 'run .NET restore'
-        run: >-
-          dotnet restore
-            ${{ github.workspace }}/Project/ByteTerrace.Ouroboros.Database.csproj
-            --verbosity ${{ github.event.inputs.buildVerbosity }}
+        run: 'dotnet restore ${{ github.workspace }}/bytrc/ByteTerrace.Ouroboros.Database.csproj --verbosity ${{ github.event.inputs.buildVerbosity }}'
       - name: 'run .NET build'
-        run: >-
-          dotnet ${{ github.workspace }}/Project/ByteTerrace.Ouroboros.Database.csproj
-            --configuration ${{ github.event.inputs.buildConfiguration }}
-            --no-restore
-            --verbosity ${{ github.event.inputs.buildVerbosity }}
+        run: 'dotnet ${{ github.workspace }}/bytrc/ByteTerrace.Ouroboros.Database.csproj --configuration ${{ github.event.inputs.buildConfiguration }} --no-restore --verbosity ${{ github.event.inputs.buildVerbosity }}'
+      - name: 'upload NuGet packages artifact'
+        uses: 'actions/upload-artifact@v2'
+        with:
+          if-no-files-found: 'error'
+          name: 'NuGet'
+          path: '${{ github.workspace }}/bytrc/**/*.*nupkg'
+          retention-days: 13
     strategy:
       matrix:
         dotnet-version: ['6.x']
