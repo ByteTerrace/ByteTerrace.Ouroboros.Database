@@ -4,7 +4,9 @@
         <AssemblyOriginatorKeyFile>ByteTerrace.Ouroboros.Database.snk</AssemblyOriginatorKeyFile>
         <Authors>ByteTerrace</Authors>
         <Company>ByteTerrace</Company>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
         <Copyright>Copyright ©2022 ByteTerrace</Copyright>
+        <DebugType>portable</DebugType>
         <DelaySign>false</DelaySign>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -25,7 +27,7 @@
         <SignAssembly>True</SignAssembly>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <TargetFrameworks>net6.0</TargetFrameworks>
-        <Version>1.0.0-preview1</Version>
+        <Version>1.0.0-preview2</Version>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="[6.*,7)" />
