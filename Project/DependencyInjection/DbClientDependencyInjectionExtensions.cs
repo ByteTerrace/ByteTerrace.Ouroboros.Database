@@ -3,8 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.Toolkit.Diagnostics;
-using System.Data.Common;
-using System.Reflection;
 
 namespace ByteTerrace.Ouroboros.Database
 {
@@ -64,7 +62,7 @@ namespace ByteTerrace.Ouroboros.Database
                 .GetSection(key: connectionName);
 
             options.ConnectionString = connectionString[key: "value"];
-            options.ProviderFactory = GetDbProviderFactory(typeName: connectionString[key: "type"]);
+            options.ProviderFactory = IDbClient.GetProviderFactory(typeName: connectionString[key: "type"]);
         }
         private static Action<IServiceProvider, TClientOptions> GetConfigureDbClientOptionsFunc<TClientOptions>(string connectionName) where TClientOptions : DbClientOptions =>
             (serviceProvider, options) => ConfigureDbClientOptions(
@@ -72,32 +70,6 @@ namespace ByteTerrace.Ouroboros.Database
                 connectionName: connectionName,
                 options: options
             );
-        private static DbProviderFactory? GetDbProviderFactory(string typeName) {
-            const string DefaultFactoryFieldName = "Instance";
-
-            var type = Type.GetType(typeName: typeName);
-
-            if (type is null) {
-                ThrowHelper.ThrowArgumentException(
-                    message: $"The specified assembly qualified name \"{typeName}\" could not be found within the collection of loaded assemblies.",
-                    name: nameof(typeName)
-                );
-            }
-
-            var field = type.GetField(
-                bindingAttr: (BindingFlags.Public | BindingFlags.Static),
-                name: DefaultFactoryFieldName
-            );
-
-            if (field is null) {
-                ThrowHelper.ThrowMissingFieldException(
-                    className: type.AssemblyQualifiedName,
-                    fieldName: DefaultFactoryFieldName
-                );
-            }
-
-            return ((DbProviderFactory?)field.GetValue(obj: default));
-        }
 
         /// <summary>
         /// Adds the <see cref="IDbClientFactory"/> and related services to the <see cref="IServiceCollection"/>.

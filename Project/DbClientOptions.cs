@@ -15,7 +15,7 @@ namespace ByteTerrace.Ouroboros.Database
         /// <param name="connectionString">The database client connection string.</param>
         /// <param name="logger">The database client logger.</param>
         /// <param name="ownsConnection">Indicates whether the database client owns the connection object.</param>
-        /// <param name="providerFactory">The database client provider factory</param>
+        /// <param name="providerFactory">The database client provider factory.</param>
         public static DbClientOptions New(
             DbConnection? connection,
             string? connectionString,
@@ -28,6 +28,22 @@ namespace ByteTerrace.Ouroboros.Database
                 connectionString: connectionString,
                 logger: logger,
                 ownsConnection: ownsConnection,
+                providerFactory: providerFactory
+            );
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DbClientOptions"/> class.
+        /// </summary>
+        /// <param name="connectionString">The database client connection string.</param>
+        /// <param name="providerFactory">The database client provider factory.</param>
+        public static DbClientOptions New(
+            string? connectionString,
+            DbProviderFactory? providerFactory
+        ) =>
+            New(
+                connection: default,
+                connectionString: connectionString,
+                logger: default,
+                ownsConnection: true,
                 providerFactory: providerFactory
             );
         /// <summary>
@@ -57,22 +73,14 @@ namespace ByteTerrace.Ouroboros.Database
         /// </summary>
         public DbProviderFactory? ProviderFactory { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DbClientOptions"/> class.
-        /// </summary>
-        /// <param name="connection">The database client connection.</param>
-        /// <param name="connectionString">The database client connection string.</param>
-        /// <param name="logger">The database client logger.</param>
-        /// <param name="ownsConnection">Indicates whether the database client owns the connection object.</param>
-        /// <param name="providerFactory">The database client provider factory</param>
-        public DbClientOptions(
+        private DbClientOptions(
             DbConnection? connection,
             string? connectionString,
             ILogger? logger,
             bool ownsConnection,
             DbProviderFactory? providerFactory
         ) {
-            if (connection is not null) {
+            if (!string.IsNullOrEmpty(connectionString) && (connection is not null)) {
                 connection.ConnectionString = connectionString;
             }
 
@@ -81,6 +89,7 @@ namespace ByteTerrace.Ouroboros.Database
             OwnsConnection = ownsConnection;
             ProviderFactory = providerFactory;
         }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DbClientOptions"/> class.
         /// </summary>

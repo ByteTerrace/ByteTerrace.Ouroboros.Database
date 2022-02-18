@@ -2,6 +2,7 @@
 using Microsoft.Toolkit.Diagnostics;
 using System.Data;
 using System.Data.Common;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace ByteTerrace.Ouroboros.Database
@@ -11,6 +12,37 @@ namespace ByteTerrace.Ouroboros.Database
     /// </summary>
     public interface IDbClient : IAsyncDisposable, IDisposable
     {
+        /// <summary>
+        /// Gets a <see cref="DbProviderFactory"/> using the "Instance" field of the specified factory type.
+        /// </summary>
+        /// <param name="typeName">The assembly qualified type name of the <see cref="DbProviderFactory"/> that will be retrieved.</param>
+        public static DbProviderFactory? GetProviderFactory(string typeName) {
+            const string DefaultFactoryFieldName = "Instance";
+
+            var type = Type.GetType(typeName: typeName);
+
+            if (type is null) {
+                ThrowHelper.ThrowArgumentException(
+                    message: $"The specified assembly qualified name \"{typeName}\" could not be found within the collection of loaded assemblies.",
+                    name: nameof(typeName)
+                );
+            }
+
+            var field = type.GetField(
+                bindingAttr: (BindingFlags.Public | BindingFlags.Static),
+                name: DefaultFactoryFieldName
+            );
+
+            if (field is null) {
+                ThrowHelper.ThrowMissingFieldException(
+                    className: type.AssemblyQualifiedName,
+                    fieldName: DefaultFactoryFieldName
+                );
+            }
+
+            return ((DbProviderFactory?)field.GetValue(obj: default));
+        }
+
         /// <summary>
         /// The default level that will be used during log operations.
         /// </summary>
