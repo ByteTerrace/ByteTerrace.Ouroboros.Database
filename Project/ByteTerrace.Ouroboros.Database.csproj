@@ -18,6 +18,7 @@
         <PackageIcon>icon.png</PackageIcon>
         <PackageLicenseExpression>Apache-2.0 OR MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/ByteTerrace/ByteTerrace.Ouroboros.Database</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>This is a preview that is not intented for production use.</PackageReleaseNotes>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -50,5 +51,6 @@
     </ItemGroup>
     <ItemGroup>
         <None Include=".\..\images\icon.png" Pack="true" PackagePath="\" />
+        <None Include=".\..\README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 </Project>

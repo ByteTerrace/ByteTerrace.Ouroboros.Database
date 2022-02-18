@@ -80,7 +80,11 @@ namespace ByteTerrace.Ouroboros.Database
             bool ownsConnection,
             DbProviderFactory? providerFactory
         ) {
-            if (!string.IsNullOrEmpty(connectionString) && (connection is not null)) {
+            if ((connection is null) && (providerFactory is not null)) {
+                connection = providerFactory.CreateConnection();
+            }
+
+            if ((connection is not null) && !string.IsNullOrEmpty(connectionString)) {
                 connection.ConnectionString = connectionString;
             }
 
