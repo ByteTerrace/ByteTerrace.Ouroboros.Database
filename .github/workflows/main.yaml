@@ -26,16 +26,22 @@ jobs:
           clean: true
           fetch-depth: 1
           lfs: false
-          path: '${{ github.workspace }}/project'
           submodules: false
       - name: 'setup .NET SDK ${{ matrix.dotnet-version }}'
         uses: 'actions/setup-dotnet@v1'
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: 'run .NET restore'
-        run: 'dotnet restore'
+        run: >-
+          dotnet restore
+            ${{ github.workspace }}/Project/ByteTerrace.Ouroboros.Database.csproj
+            --verbosity ${{ github.event.inputs.buildVerbosity }}
       - name: 'run .NET build'
-        run: 'dotnet --configuration ${{ github.event.inputs.buildConfiguration }} --no-restore --verbosity ${{ github.event.inputs.buildVerbosity }}'
+        run: >-
+          dotnet ${{ github.workspace }}/Project/ByteTerrace.Ouroboros.Database.csproj
+            --configuration ${{ github.event.inputs.buildConfiguration }}
+            --no-restore
+            --verbosity ${{ github.event.inputs.buildVerbosity }}
     strategy:
       matrix:
         dotnet-version: ['6.x']
