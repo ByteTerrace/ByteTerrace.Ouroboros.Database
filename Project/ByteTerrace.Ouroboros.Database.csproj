@@ -21,7 +21,7 @@
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <RepositoryType>Git</RepositoryType>
-        <RepositoryUrl></RepositoryUrl>
+        <RepositoryUrl>https://github.com/ByteTerrace/ByteTerrace.Ouroboros.Database</RepositoryUrl>
         <SignAssembly>True</SignAssembly>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <TargetFrameworks>net6.0</TargetFrameworks>
@@ -32,7 +32,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="[6.*,7)" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="[6.*,7)" />
         <PackageReference Include="Microsoft.Toolkit.Diagnostics" Version="[7.*,8)" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" Version="1.1.1" />
         <PackageReference Include="System.Linq.Async" Version="[6.*,7)" />
     </ItemGroup>
     <ItemGroup>
