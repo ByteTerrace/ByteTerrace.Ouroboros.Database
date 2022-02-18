@@ -6,7 +6,7 @@ namespace ByteTerrace.Ouroboros.Database
     /// Represents a quoted database identifier.
     /// </summary>
     /// <param name="Value">The value of the identifier.</param>
-    internal readonly record struct DbQuotedIdentifier(
+    public readonly record struct DbQuotedIdentifier(
       string? Value
     )
     {

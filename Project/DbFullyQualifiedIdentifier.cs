@@ -2,13 +2,28 @@
 
 namespace ByteTerrace.Ouroboros.Database
 {
-    internal readonly record struct DbFullyQualifiedIdentifier(
+    /// <summary>
+    /// Represents a fully qualified database identifier.
+    /// </summary>
+    /// <param name="DatabaseName">The escaped name of the database.</param>
+    /// <param name="ObjectName">The escaped name of the object.</param>
+    /// <param name="SchemaName">The escaped name of the schema.</param>
+    /// <param name="ServerName">The escaped name of the server.</param>
+    public readonly record struct DbFullyQualifiedIdentifier(
         DbQuotedIdentifier DatabaseName,
         DbQuotedIdentifier ObjectName,
         DbQuotedIdentifier SchemaName,
         DbQuotedIdentifier ServerName
     )
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DbFullyQualifiedIdentifier"/> struct.
+        /// </summary>
+        /// <param name="commandBuilder">The command builder that will be used to escape the specified names.</param>
+        /// <param name="databaseName">The escaped name of the database.</param>
+        /// <param name="objectName">The escaped name of the object.</param>
+        /// <param name="schemaName">The escaped name of the schema.</param>
+        /// <param name="serverName">The escaped name of the server.</param>
         public static DbFullyQualifiedIdentifier New(
             DbCommandBuilder commandBuilder,
             string databaseName,
@@ -21,6 +36,13 @@ namespace ByteTerrace.Ouroboros.Database
             SchemaName: (string.IsNullOrEmpty(schemaName) ? default : DbQuotedIdentifier.New(commandBuilder: commandBuilder, value: schemaName)),
             ServerName: (string.IsNullOrEmpty(serverName) ? default : DbQuotedIdentifier.New(commandBuilder: commandBuilder, value: serverName))
         );
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DbFullyQualifiedIdentifier"/> struct.
+        /// </summary>
+        /// <param name="commandBuilder">The command builder that will be used to escape the specified names.</param>
+        /// <param name="databaseName">The escaped name of the database.</param>
+        /// <param name="objectName">The escaped name of the object.</param>
+        /// <param name="schemaName">The escaped name of the schema.</param>
         public static DbFullyQualifiedIdentifier New(
             DbCommandBuilder commandBuilder,
             string databaseName,
@@ -33,6 +55,12 @@ namespace ByteTerrace.Ouroboros.Database
             schemaName: schemaName,
             serverName: string.Empty
         );
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DbFullyQualifiedIdentifier"/> struct.
+        /// </summary>
+        /// <param name="commandBuilder">The command builder that will be used to escape the specified names.</param>
+        /// <param name="objectName">The escaped name of the object.</param>
+        /// <param name="schemaName">The escaped name of the schema.</param>
         public static DbFullyQualifiedIdentifier New(
             DbCommandBuilder commandBuilder,
             string schemaName,
@@ -44,7 +72,9 @@ namespace ByteTerrace.Ouroboros.Database
             schemaName: schemaName,
             serverName: string.Empty
         );
-
+        /// <summary>
+        /// Returns the fully qualified database identifier as a string.
+        /// </summary>
         public override string ToString() =>
             (
                 (string.IsNullOrEmpty(ServerName.Value) ? string.Empty : $"{ServerName.Value}.")
