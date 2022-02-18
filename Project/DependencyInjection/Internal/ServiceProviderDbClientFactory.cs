@@ -5,7 +5,7 @@ using Microsoft.Toolkit.Diagnostics;
 
 namespace ByteTerrace.Ouroboros.Database
 {
-    internal sealed class ServiceProviderDbClientFactory<TClient, TClientOptions> : IDbClientFactory<TClient>, IDbConnectionFactory
+    internal sealed class ServiceProviderDbClientFactory<TClient, TClientOptions> : IDbClientFactory, IDbConnectionFactory
         where TClient : DbClient
         where TClientOptions : DbClientOptions
     {
@@ -28,7 +28,7 @@ namespace ByteTerrace.Ouroboros.Database
             ServiceProvider = serviceProvider;
         }
 
-        public TClient NewDbClient(string name) {
+        public IDbClient NewClient(string name) {
             if (Logger.IsEnabled(DefaultLogLevel)) {
                 DbClientFactoryLogging.CreateClient(
                     logger: Logger,
@@ -54,7 +54,7 @@ namespace ByteTerrace.Ouroboros.Database
                 ThrowHelper.ThrowArgumentNullException(name: $"{nameof(clientOptions)}.{nameof(clientOptions.ProviderFactory)}");
             }
 
-            var connection = ((IDbConnectionFactory)this).NewDbConnection(
+            var connection = ((IDbConnectionFactory)this).NewConnection(
                 name: name,
                 providerFactory: providerFactory
             );

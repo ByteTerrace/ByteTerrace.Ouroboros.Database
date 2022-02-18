@@ -8,9 +8,9 @@ namespace ByteTerrace.Ouroboros.Database
     public interface IDbClientConfigurationRefresher
     {
         /// <summary>
-        /// The database client factory that will be used when constructing <see cref="DbClient"/> instances.
+        /// The database client factory that will be used when constructing <see cref="IDbClient"/> instances.
         /// </summary>
-        IDbClientFactory<DbClient> ClientFactory { get; set; }
+        IDbClientFactory ClientFactory { get; set; }
         /// <summary>
         /// Gets the latest configuration values asynchronously.
         /// </summary>

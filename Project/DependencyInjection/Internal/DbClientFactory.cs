@@ -2,7 +2,7 @@
 
 namespace ByteTerrace.Ouroboros.Database
 {
-    internal sealed class DbClientFactory : IDbClientFactory<DbClient>, IDbConnectionFactory
+    internal sealed class DbClientFactory : IDbClientFactory, IDbConnectionFactory
     {
         public static DbClientFactory New(Action<DbClientOptions> optionsAction) =>
             new(optionsAction: optionsAction);
@@ -13,7 +13,7 @@ namespace ByteTerrace.Ouroboros.Database
             OptionsAction = optionsAction;
         }
 
-        public DbClient NewDbClient(string name) {
+        public IDbClient NewClient(string name) {
             var clientOptions = DbClientOptions.New();
 
             OptionsAction(obj: clientOptions);
@@ -24,7 +24,7 @@ namespace ByteTerrace.Ouroboros.Database
                 ThrowHelper.ThrowArgumentNullException(name: $"{nameof(clientOptions)}.{nameof(clientOptions.ProviderFactory)}");
             }
 
-            var connection = ((IDbConnectionFactory)this).NewDbConnection(
+            var connection = ((IDbConnectionFactory)this).NewConnection(
                 name: name,
                 providerFactory: providerFactory
             );

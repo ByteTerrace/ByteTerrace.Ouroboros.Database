@@ -5,7 +5,7 @@ namespace ByteTerrace.Ouroboros.Database
 {
     internal interface IDbConnectionFactory
     {
-        public DbConnection NewDbConnection(
+        public DbConnection NewConnection(
             string name,
             DbProviderFactory providerFactory
         ) {

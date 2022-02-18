@@ -403,5 +403,11 @@ namespace ByteTerrace.Ouroboros.Database
                     .ConfigureAwait(continueOnCapturedContext: false);
             }
         }
+        /// <summary>
+        /// Convert this instance to the specified type of <see cref="DbClient"/>.
+        /// </summary>
+        /// <typeparam name="TClient">The type of <see cref="DbClient"/> that this instance will be converted to.</typeparam>
+        public TClient ToDbClient<TClient>() where TClient : DbClient =>
+            ((TClient)this);
     }
 }

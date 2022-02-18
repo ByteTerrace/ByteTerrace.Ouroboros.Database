@@ -9,7 +9,7 @@ namespace ByteTerrace.Ouroboros.Database
     internal sealed class DbClientConfigurationProvider : ConfigurationProvider, IDbClientConfigurationRefresher
     {
         public static DbClientConfigurationProvider New(
-            IDbClientFactory<DbClient> clientFactory,
+            IDbClientFactory clientFactory,
             string name,
             DbClientConfigurationSourceOptions options
         ) =>
@@ -19,12 +19,12 @@ namespace ByteTerrace.Ouroboros.Database
                 options: options
             );
 
-        public IDbClientFactory<DbClient> ClientFactory { get; set; }
+        public IDbClientFactory ClientFactory { get; set; }
         public string Name { get; set; }
         public DbClientConfigurationSourceOptions Options { get; set; }
 
         private DbClientConfigurationProvider(
-            IDbClientFactory<DbClient> clientFactory,
+            IDbClientFactory clientFactory,
             string name,
             DbClientConfigurationSourceOptions options
         ) {
@@ -38,9 +38,7 @@ namespace ByteTerrace.Ouroboros.Database
                 ThrowHelper.ThrowArgumentNullException(name: nameof(name));
             }
 
-            return ClientFactory
-                .NewDbClient(name: name)
-                .ToIDbClient();
+            return ClientFactory.NewClient(name: name);
         }
         private static DbStoredProcedureCall GetStoredProcedureCall(
             DbCommandBuilder commandBuilder,

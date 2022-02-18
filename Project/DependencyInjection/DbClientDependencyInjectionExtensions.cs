@@ -27,12 +27,12 @@ namespace ByteTerrace.Ouroboros.Database
                 .AddOptions();
 
             services.TryAddSingleton<ServiceProviderDbClientFactory<DbClient, DbClientOptions>>();
-            services.TryAddSingleton<IDbClientFactory<DbClient>>(
+            services.TryAddSingleton<IDbClientFactory>(
                 implementationFactory: serviceProvider =>
                     serviceProvider.GetRequiredService<ServiceProviderDbClientFactory<DbClient, DbClientOptions>>()
             );
             services.TryAddSingleton<ServiceProviderDbClientFactory<TClient, TClientOptions>>();
-            services.TryAddSingleton<IDbClientFactory<TClient>>(
+            services.TryAddSingleton<IDbClientFactory>(
                 implementationFactory: serviceProvider =>
                     serviceProvider.GetRequiredService<ServiceProviderDbClientFactory<TClient, TClientOptions>>()
             );
@@ -100,7 +100,7 @@ namespace ByteTerrace.Ouroboros.Database
         }
 
         /// <summary>
-        /// Adds the <see cref="IDbClientFactory{TClient}"/> and related services to the <see cref="IServiceCollection"/>.
+        /// Adds the <see cref="IDbClientFactory"/> and related services to the <see cref="IServiceCollection"/>.
         /// </summary>
         /// <param name="connectionName">The name of the database connection.</param>
         /// <param name="services">The collection of services that will be appended to.</param>
@@ -128,7 +128,7 @@ namespace ByteTerrace.Ouroboros.Database
                 );
         }
         /// <summary>
-        /// Adds the <see cref="IDbClientFactory{DbClient}"/> and related services to the specified <see cref="IServiceCollection"/>.
+        /// Adds the <see cref="IDbClientFactory"/> and related services to the specified <see cref="IServiceCollection"/>.
         /// </summary>
         /// <param name="connectionName">The name of the database connection.</param>
         /// <param name="services">The collection of services that will be appended to.</param>

@@ -8,7 +8,7 @@ namespace ByteTerrace.Ouroboros.Database
         public IEnumerable<IDbClientConfigurationRefresher> Refreshers { get; init; }
 
         public DbClientConfigurationRefresherProvider(
-            IDbClientFactory<DbClient> clientFactory,
+            IDbClientFactory clientFactory,
             IConfiguration configuration
         ) {
             var configurationRoot = configuration as IConfigurationRoot;
