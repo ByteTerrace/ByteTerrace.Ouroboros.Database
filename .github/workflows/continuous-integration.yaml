@@ -33,15 +33,15 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: 'run .NET restore'
-        run: 'dotnet restore "${{ github.workspace }}/Project/ByteTerrace.Ouroboros.Database.csproj" --verbosity ${{ github.event.inputs.buildVerbosity }}'
+        run: 'dotnet restore "${{ github.workspace }}/Project/ByteTerrace.Ouroboros.Database.csproj" --nologo --verbosity ${{ github.event.inputs.buildVerbosity }}'
       - name: 'run .NET build'
-        run: 'dotnet build "${{ github.workspace }}/Project/ByteTerrace.Ouroboros.Database.csproj" --configuration ${{ github.event.inputs.buildConfiguration }} --no-restore --verbosity ${{ github.event.inputs.buildVerbosity }}'
+        run: 'dotnet build "${{ github.workspace }}/Project/ByteTerrace.Ouroboros.Database.csproj" --configuration ${{ github.event.inputs.buildConfiguration }} --nologo --no-restore --verbosity ${{ github.event.inputs.buildVerbosity }}'
       - name: 'upload NuGet packages artifact'
         uses: 'actions/upload-artifact@v2'
         with:
           if-no-files-found: 'error'
           name: 'NuGet'
-          path: '${{ github.workspace }}/**/*.*nupkg'
+          path: '${{ github.workspace }}/Project/bin/${{ github.event.inputs.buildConfiguration }}/*.*nupkg'
           retention-days: 13
     strategy:
       matrix:
