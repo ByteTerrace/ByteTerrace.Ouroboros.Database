@@ -27,9 +27,9 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <SignAssembly>true</SignAssembly>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <TargetFrameworks>net6.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.1</TargetFrameworks>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <Version>1.0.0-preview6</Version>
+        <Version>1.0.0-preview7</Version>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <DebugType>pdbonly</DebugType>
@@ -51,6 +51,6 @@
     </ItemGroup>
     <ItemGroup>
         <None Include=".\..\images\icon.png" Pack="true" PackagePath="\" />
-        <None Include=".\..\README.md" Pack="true" PackagePath="\"/>
+        <None Include=".\..\README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
 ## Basic Usage
-
 ```
 var options = DbClientOptions.New(
     connectionString: "Server=(localdb)\\MSSQLLocalDb;Initial Catalog=master;",
@@ -37,7 +36,7 @@ _ = client
 ```
 using ByteTerrace.Ouroboros.Database;
 
-var builder = WebApplication.CreateBuilder(arges: args);
+var builder = WebApplication.CreateBuilder(args: args);
 
 builder
     .Services
