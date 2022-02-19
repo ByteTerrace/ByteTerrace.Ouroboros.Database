@@ -42,6 +42,9 @@
         <RestoreLockedMode>true</RestoreLockedMode>
     </PropertyGroup>
     <ItemGroup>
+        <Compile Remove=".\Internal\IsExternalInit.cs" Condition="('$(TargetFramework)' != 'netstandard2.1')" />
+    </ItemGroup>
+    <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="[6.*,7)" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="[6.*,7)" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="[6.*,7)" />
