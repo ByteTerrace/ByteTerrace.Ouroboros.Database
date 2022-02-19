@@ -1,13 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <AnalysisMode>AllEnabledByDefault</AnalysisMode>
         <AssemblyOriginatorKeyFile>ByteTerrace.Ouroboros.Database.snk</AssemblyOriginatorKeyFile>
         <Authors>ByteTerrace</Authors>
+        <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
         <Company>ByteTerrace</Company>
         <Copyright>Copyright ©2022 ByteTerrace</Copyright>
         <DebugType>portable</DebugType>
         <DelaySign>false</DelaySign>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -29,7 +34,7 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <TargetFrameworks>netstandard2.1</TargetFrameworks>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <Version>1.0.0-preview7</Version>
+        <Version>1.0.0-preview8</Version>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <DebugType>pdbonly</DebugType>

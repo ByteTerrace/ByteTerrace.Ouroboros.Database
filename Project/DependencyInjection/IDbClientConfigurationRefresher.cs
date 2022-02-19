@@ -1,24 +1,23 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace ByteTerrace.Ouroboros.Database
+namespace ByteTerrace.Ouroboros.Database;
+
+/// <summary>
+/// Exposes operations for dynamically updating a <see cref="DbClientConfigurationSource"/>.
+/// </summary>
+public interface IDbClientConfigurationRefresher
 {
     /// <summary>
-    /// Exposes operations for dynamically updating a <see cref="DbClientConfigurationSource"/>.
+    /// The database client factory that will be used when constructing <see cref="IDbClient"/> instances.
     /// </summary>
-    public interface IDbClientConfigurationRefresher
-    {
-        /// <summary>
-        /// The database client factory that will be used when constructing <see cref="IDbClient"/> instances.
-        /// </summary>
-        IDbClientFactory ClientFactory { get; set; }
-        /// <summary>
-        /// Gets the latest configuration values asynchronously.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="optionsMonitor"></param>
-        ValueTask RefreshAsync(
-            IOptionsMonitor<DbClientConfigurationSourceOptions> optionsMonitor,
-            CancellationToken cancellationToken = default
-        );
-    }
+    IDbClientFactory ClientFactory { get; set; }
+    /// <summary>
+    /// Gets the latest configuration values asynchronously.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="optionsMonitor"></param>
+    ValueTask RefreshAsync(
+        IOptionsMonitor<DbClientConfigurationSourceOptions> optionsMonitor,
+        CancellationToken cancellationToken = default
+    );
 }

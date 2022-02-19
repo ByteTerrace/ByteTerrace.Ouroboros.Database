@@ -4,113 +4,114 @@ using Microsoft.Toolkit.Diagnostics;
 using System.Data;
 using System.Data.Common;
 
-namespace ByteTerrace.Ouroboros.Database
+namespace ByteTerrace.Ouroboros.Database;
+
+internal sealed class DbClientConfigurationProvider : ConfigurationProvider, IDbClientConfigurationRefresher
 {
-    internal sealed class DbClientConfigurationProvider : ConfigurationProvider, IDbClientConfigurationRefresher
-    {
-        public static DbClientConfigurationProvider New(
-            IDbClientFactory clientFactory,
-            string name,
-            DbClientConfigurationSourceOptions options
-        ) =>
-            new(
-                clientFactory: clientFactory,
-                name: name,
-                options: options
-            );
+    public static DbClientConfigurationProvider New(
+        IDbClientFactory clientFactory,
+        string name,
+        DbClientConfigurationSourceOptions options
+    ) =>
+        new(
+            clientFactory: clientFactory,
+            name: name,
+            options: options
+        );
 
-        public IDbClientFactory ClientFactory { get; set; }
-        public string Name { get; set; }
-        public DbClientConfigurationSourceOptions Options { get; set; }
+    public IDbClientFactory ClientFactory { get; set; }
+    public string Name { get; set; }
+    public DbClientConfigurationSourceOptions Options { get; set; }
 
-        private DbClientConfigurationProvider(
-            IDbClientFactory clientFactory,
-            string name,
-            DbClientConfigurationSourceOptions options
-        ) {
-            ClientFactory = clientFactory;
-            Name = name;
-            Options = options;
+    private DbClientConfigurationProvider(
+        IDbClientFactory clientFactory,
+        string name,
+        DbClientConfigurationSourceOptions options
+    ) {
+        ClientFactory = clientFactory;
+        Name = name;
+        Options = options;
+    }
+
+    private IDbClient GetClient(string? name) {
+        if (name is null) {
+            ThrowHelper.ThrowArgumentNullException(name: nameof(name));
         }
 
-        private IDbClient GetClient(string? name) {
-            if (name is null) {
-                ThrowHelper.ThrowArgumentNullException(name: nameof(name));
-            }
-
-            return ClientFactory.NewClient(name: name);
-        }
-        private static DbStoredProcedureCall GetStoredProcedureCall(
-            DbCommandBuilder commandBuilder,
-            IEnumerable<DbParameter>? parameters,
-            string? schemaName,
-            string? storedProcedureName
-        ) {
-            if (schemaName is null) {
-                ThrowHelper.ThrowArgumentNullException(name: nameof(schemaName));
-            }
-
-            if (storedProcedureName is null) {
-                ThrowHelper.ThrowArgumentNullException(name: nameof(storedProcedureName));
-            }
-
-            return DbStoredProcedureCall.New(
-                name: DbFullyQualifiedIdentifier
-                    .New(
-                        commandBuilder: commandBuilder,
-                        objectName: storedProcedureName,
-                        schemaName: schemaName
-                    )
-                    .ToString(),
-                parameters: parameters
-            );
+        return ClientFactory.NewClient(name: name);
+    }
+    private static DbStoredProcedureCall GetStoredProcedureCall(
+        DbCommandBuilder commandBuilder,
+        IEnumerable<DbParameter>? parameters,
+        string? schemaName,
+        string? storedProcedureName
+    ) {
+        if (schemaName is null) {
+            ThrowHelper.ThrowArgumentNullException(name: nameof(schemaName));
         }
 
-        public override void Load() {
-            var providerOptions = Options;
-            var clientConfigurationOptions = DbClientConfigurationProviderOptions.New();
-            var clientConfigurationOptionsActions = providerOptions.ClientConfigurationProviderOptionsActions;
-            var clientConfigurationOptionsActionsCount = clientConfigurationOptionsActions.Count;
+        if (storedProcedureName is null) {
+            ThrowHelper.ThrowArgumentNullException(name: nameof(storedProcedureName));
+        }
 
-            for (var i = 0; (i < clientConfigurationOptionsActionsCount); ++i) {
-                clientConfigurationOptionsActions[i](obj: clientConfigurationOptions);
-            }
-
-            using var client = GetClient(name: clientConfigurationOptions.ConnectionName);
-            using var reader = client.ExecuteReader(
-                behavior: CommandBehavior.SequentialAccess,
-                command: GetStoredProcedureCall(
-                    commandBuilder: client.CommandBuilder,
-                    parameters: clientConfigurationOptions.Parameters,
-                    schemaName: clientConfigurationOptions.SchemaName,
-                    storedProcedureName: clientConfigurationOptions.StoredProcedureName
+        return DbStoredProcedureCall.New(
+            name: DbFullyQualifiedIdentifier
+                .New(
+                    commandBuilder: commandBuilder,
+                    objectName: storedProcedureName,
+                    schemaName: schemaName
                 )
-            );
+                .ToString(),
+            parameters: parameters
+        );
+    }
 
-            Data = client
-                .EnumerateResultSets(reader: reader)
-                .SelectMany(selector: resultSet => resultSet)
-                .ToDictionary(
-                    elementSelector: (row) => (row[name: clientConfigurationOptions.ValueColumnName].ToString() ?? string.Empty),
-                    keySelector: (row) => (row[name: clientConfigurationOptions.KeyColumnName].ToString() ?? string.Empty)
-                );
+    public override void Load() {
+        var providerOptions = Options;
+        var clientConfigurationOptions = DbClientConfigurationProviderOptions.New();
+        var clientConfigurationOptionsActions = providerOptions.ClientConfigurationProviderOptionsActions;
+        var clientConfigurationOptionsActionsCount = clientConfigurationOptionsActions.Count;
+
+        for (var i = 0; (i < clientConfigurationOptionsActionsCount); ++i) {
+            clientConfigurationOptionsActions[i](obj: clientConfigurationOptions);
         }
 
-        public async ValueTask RefreshAsync(
-            IOptionsMonitor<DbClientConfigurationSourceOptions> optionsMonitor,
-            CancellationToken cancellationToken = default
-        ) {
-            var configurationSourceOptions = optionsMonitor.Get(name: Name);
-            var configurationProviderOptions = DbClientConfigurationProviderOptions.New();
-            var clientConfigurationOptionsActions = configurationSourceOptions.ClientConfigurationProviderOptionsActions;
-            var clientConfigurationOptionsActionsCount = clientConfigurationOptionsActions.Count;
+        using var client = GetClient(name: clientConfigurationOptions.ConnectionName);
+        using var reader = client.ExecuteReader(
+            behavior: CommandBehavior.SequentialAccess,
+            command: GetStoredProcedureCall(
+                commandBuilder: client.CommandBuilder,
+                parameters: clientConfigurationOptions.Parameters,
+                schemaName: clientConfigurationOptions.SchemaName,
+                storedProcedureName: clientConfigurationOptions.StoredProcedureName
+            )
+        );
 
-            for (var i = 0; (i < clientConfigurationOptionsActionsCount); ++i) {
-                clientConfigurationOptionsActions[i](obj: configurationProviderOptions);
-            }
+        Data = client
+            .EnumerateResultSets(reader: reader)
+            .SelectMany(selector: resultSet => resultSet)
+            .ToDictionary(
+                elementSelector: (row) => (row[name: clientConfigurationOptions.ValueColumnName].ToString() ?? string.Empty),
+                keySelector: (row) => (row[name: clientConfigurationOptions.KeyColumnName].ToString() ?? string.Empty)
+            );
+    }
 
-            using var client = GetClient(name: configurationProviderOptions.ConnectionName);
-            using var reader = await client.ExecuteReaderAsync(
+    public async ValueTask RefreshAsync(
+        IOptionsMonitor<DbClientConfigurationSourceOptions> optionsMonitor,
+        CancellationToken cancellationToken = default
+    ) {
+        var configurationSourceOptions = optionsMonitor.Get(name: Name);
+        var configurationProviderOptions = DbClientConfigurationProviderOptions.New();
+        var clientConfigurationOptionsActions = configurationSourceOptions.ClientConfigurationProviderOptionsActions;
+        var clientConfigurationOptionsActionsCount = clientConfigurationOptionsActions.Count;
+
+        for (var i = 0; (i < clientConfigurationOptionsActionsCount); ++i) {
+            clientConfigurationOptionsActions[i](obj: configurationProviderOptions);
+        }
+
+        using var client = GetClient(name: configurationProviderOptions.ConnectionName);
+        using var reader = await client
+            .ExecuteReaderAsync(
                 behavior: CommandBehavior.SequentialAccess,
                 cancellationToken: cancellationToken,
                 command: GetStoredProcedureCall(
@@ -119,19 +120,20 @@ namespace ByteTerrace.Ouroboros.Database
                     schemaName: configurationProviderOptions.SchemaName,
                     storedProcedureName: configurationProviderOptions.StoredProcedureName
                 )
-            );
+            )
+            .ConfigureAwait(continueOnCapturedContext: false);
 
-            Data = await client
-               .EnumerateResultSetsAsync(
-                    cancellationToken: cancellationToken,
-                    reader: reader
-                )
-               .SelectMany(selector: resultSet => resultSet.ToAsyncEnumerable())
-               .ToDictionaryAsync(
-                    cancellationToken: cancellationToken,
-                    elementSelector: (row) => (row[name: configurationProviderOptions.ValueColumnName].ToString() ?? string.Empty),
-                    keySelector: (row) => (row[name: configurationProviderOptions.KeyColumnName].ToString() ?? string.Empty)
-                );
-        }
+        Data = await client
+           .EnumerateResultSetsAsync(
+                cancellationToken: cancellationToken,
+                reader: reader
+            )
+           .SelectMany(selector: resultSet => resultSet.ToAsyncEnumerable())
+           .ToDictionaryAsync(
+                cancellationToken: cancellationToken,
+                elementSelector: (row) => (row[name: configurationProviderOptions.ValueColumnName].ToString() ?? string.Empty),
+                keySelector: (row) => (row[name: configurationProviderOptions.KeyColumnName].ToString() ?? string.Empty)
+            )
+           .ConfigureAwait(continueOnCapturedContext: false);
     }
 }

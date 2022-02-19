@@ -1,13 +1,12 @@
-﻿namespace ByteTerrace.Ouroboros.Database
+﻿namespace ByteTerrace.Ouroboros.Database;
+
+/// <summary>
+/// Exposes operations for retrieving <see cref="IDbClientConfigurationRefresher"/> instances.
+/// </summary>
+public interface IDbClientConfigurationRefresherProvider
 {
     /// <summary>
-    /// Exposes operations for retrieving <see cref="IDbClientConfigurationRefresher"/> instances.
+    /// Gets the refreshers that have been associated with this provider.
     /// </summary>
-    public interface IDbClientConfigurationRefresherProvider
-    {
-        /// <summary>
-        /// Gets the refreshers that have been associated with this provider.
-        /// </summary>
-        IEnumerable<IDbClientConfigurationRefresher> Refreshers { get; init; }
-    }
+    IEnumerable<IDbClientConfigurationRefresher> Refreshers { get; init; }
 }
