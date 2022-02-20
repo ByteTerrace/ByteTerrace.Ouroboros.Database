@@ -1,5 +1,7 @@
 ﻿using System.Collections;
-using System.Data;
+using System.Collections.ObjectModel;
+using System.Data.Common;
+using System.Runtime.CompilerServices;
 
 namespace ByteTerrace.Ouroboros.Database;
 
@@ -7,57 +9,93 @@ namespace ByteTerrace.Ouroboros.Database;
 /// Represents a set of rows from a database query along with the metadata about the query that returned them.
 /// </summary>
 /// <param name="FieldMetadata">The metadata of the fields that are returned by the result set.</param>
+/// <param name="FieldNameToOrdinalMap">A dictionary that takes a field name to its ordinal position.</param>
 /// <param name="Reader">The data reader that generates the result set.</param>
 public readonly record struct DbResultSet(
     IReadOnlyList<DbFieldMetadata> FieldMetadata,
-    IDataReader Reader
-) : IEnumerable<DbRow>
+    IReadOnlyDictionary<string, int> FieldNameToOrdinalMap,
+    DbDataReader Reader
+) : IAsyncEnumerable<DbRow>, IEnumerable<DbRow>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DbResultSet"/> struct.
     /// </summary>
     /// <param name="reader">The data reader that will be enumerated.</param>
-    public static DbResultSet New(IDataReader reader) {
+    public static DbResultSet New(DbDataReader reader) {
         var fieldCount = reader.FieldCount;
         var fieldMetadata = new DbFieldMetadata[fieldCount];
-
-        for (var i = 0; (i < fieldCount); ++i) {
-            fieldMetadata[i] = DbFieldMetadata.New(
-                clrType: reader.GetFieldType(i),
-                dbType: reader.GetDataTypeName(i),
-                name: reader.GetName(i),
-                ordinal: i
-            );
-        }
-
-        return new(
-            FieldMetadata: fieldMetadata,
-            Reader: reader
+        var fieldNameCounters = new Dictionary<string, int>(
+            capacity: fieldCount,
+            comparer: StringComparer.OrdinalIgnoreCase
         );
-    }
-
-    /// <summary>
-    /// Returns an enumerator that iterates through the values in this <see cref="DbResultSet"/>.
-    /// </summary>
-    public IEnumerator<DbRow> GetEnumerator() {
-        var fieldCount = FieldMetadata.Count;
         var fieldNameToOrdinalMap = new Dictionary<string, int>(
             capacity: fieldCount,
             comparer: StringComparer.OrdinalIgnoreCase
         );
 
         for (var i = 0; (i < fieldCount); ++i) {
-            var fieldMetadata = FieldMetadata[i];
+            var fieldName = reader.GetName(ordinal: i);
 
-            fieldNameToOrdinalMap[fieldMetadata.Name] = fieldMetadata.Ordinal;
+            fieldMetadata[i] = DbFieldMetadata.New(
+                clrType: reader.GetFieldType(ordinal: i),
+                dbType: reader.GetDataTypeName(ordinal: i),
+                name: fieldName,
+                ordinal: i
+            );
+            fieldNameCounters[key: fieldName] += 1;
+
+            if (1 == fieldNameCounters[key: fieldName]) {
+                fieldNameToOrdinalMap[key: fieldName] = i;
+            }
+            else {
+                fieldNameToOrdinalMap[key: $"{fieldName}_{i}"] = i;
+            }
         }
 
+        return new(
+            FieldMetadata: fieldMetadata,
+            FieldNameToOrdinalMap: new ReadOnlyDictionary<string, int>(
+                dictionary: fieldNameToOrdinalMap
+            ),
+            Reader: reader
+        );
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private DbRow GetValues(int fieldCount) {
+        var fieldValues = new object[fieldCount];
+
+        _ = Reader.GetValues(values: fieldValues);
+
+        return DbRow.New(
+            fieldNameToOrdinalMap: FieldNameToOrdinalMap,
+            fieldValues: Array.AsReadOnly(array: fieldValues)
+        );
+    }
+
+    /// <summary>
+    /// Returns an enumerator that iterates through the values in this <see cref="DbResultSet"/> asynchronously.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public async IAsyncEnumerator<DbRow> GetAsyncEnumerator(CancellationToken cancellationToken = default) {
+        var fieldCount = FieldMetadata.Count;
+
+        while (
+            await Reader
+                .ReadAsync(cancellationToken: cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false)
+        ) {
+            yield return GetValues(fieldCount: fieldCount);
+        }
+    }
+    /// <summary>
+    /// Returns an enumerator that iterates through the values in this <see cref="DbResultSet"/>.
+    /// </summary>
+    public IEnumerator<DbRow> GetEnumerator() {
+        var fieldCount = FieldMetadata.Count;
+
         while (Reader.Read()) {
-            var fieldValues = new object[fieldCount];
-
-            _ = Reader.GetValues(fieldValues);
-
-            yield return DbRow.New(fieldNameToOrdinalMap, Array.AsReadOnly(fieldValues));
+            yield return GetValues(fieldCount: fieldCount);
         }
     }
     /// <summary>

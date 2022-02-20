@@ -8,7 +8,7 @@ namespace ByteTerrace.Ouroboros.Database;
 /// <param name="FieldNameToOrdinalMap">The map that takes a field name to its ordinal position.</param>
 /// <param name="FieldValues">The values of the fields in the row.</param>
 public readonly record struct DbRow(
-    IDictionary<string, int> FieldNameToOrdinalMap,
+    IReadOnlyDictionary<string, int> FieldNameToOrdinalMap,
     IReadOnlyList<object> FieldValues
 )
 {
@@ -18,7 +18,7 @@ public readonly record struct DbRow(
     /// <param name="fieldNameToOrdinalMap">The map that takes a field name to its ordinal position.</param>
     /// <param name="fieldValues">The values of the fields in the row.</param>
     public static DbRow New(
-        IDictionary<string, int> fieldNameToOrdinalMap,
+        IReadOnlyDictionary<string, int> fieldNameToOrdinalMap,
         IReadOnlyList<object> fieldValues
     ) =>
         new(

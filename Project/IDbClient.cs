@@ -78,21 +78,22 @@ public interface IDbClient : IAsyncDisposable, IDisposable
     /// </summary>
     DbConnection Connection { get; init; }
     /// <summary>
+    /// Gets the logger that is associated with this database client.
+    /// </summary>
+    ILogger Logger { get; init; }
+    /// <summary>
+    /// Gets the underlying database provider factory.
+    /// </summary>
+    DbProviderFactory ProviderFactory { get; init; }
+
+    /// <summary>
     /// Indicates whether the underlying resources of this database client have been disposed.
     /// </summary>
     public bool IsDisposed { get; }
     /// <summary>
-    /// Gets the logger that is associated with this database client.
-    /// </summary>
-    public ILogger Logger { get; init; }
-    /// <summary>
     /// Indicates whether this client owns the underlying database connection.
     /// </summary>
     public bool OwnsConnection { get; init; }
-    /// <summary>
-    /// Gets the underlying database provider factory.
-    /// </summary>
-    public DbProviderFactory ProviderFactory { get; init; }
 
     private bool ConnectionIsBrokenOrClosed() {
         if (IsDisposed) {
