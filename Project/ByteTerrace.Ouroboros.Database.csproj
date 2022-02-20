@@ -28,9 +28,9 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <SignAssembly>true</SignAssembly>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <TargetFrameworks>netcoreapp3.1;netstandard2.1;net5.0;net6.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.1</TargetFrameworks>
         <VersionPrefix>1.0.0</VersionPrefix>
-        <VersionSuffix>preview10</VersionSuffix>
+        <VersionSuffix>preview11</VersionSuffix>
     </PropertyGroup>
     <Choose>
         <When Condition="'$(Configuration)' == 'Release'">
@@ -81,7 +81,6 @@
         </Otherwise>
     </Choose>
     <Choose>
-        <When Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
         <When Condition="'$(TargetFramework)' == 'netstandard2.1'" />
         <Otherwise>
             <ItemGroup>
