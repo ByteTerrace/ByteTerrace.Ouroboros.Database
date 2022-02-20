@@ -20,6 +20,7 @@
         <PackageProjectUrl>https://github.com/ByteTerrace/ByteTerrace.Ouroboros.Database</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>This is a preview that is not intented for production use.</PackageReleaseNotes>
+        <PackageTags>ado.net;configuration;database;provider;sql</PackageTags>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <RepositoryType>Git</RepositoryType>
@@ -27,7 +28,6 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <SignAssembly>true</SignAssembly>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <Tags>ado.net;configuration;database;provider;sql</Tags>
         <TargetFrameworks>netstandard2.1</TargetFrameworks>
         <VersionPrefix>1.0.0</VersionPrefix>
         <VersionSuffix>preview9</VersionSuffix>
