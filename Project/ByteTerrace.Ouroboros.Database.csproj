@@ -27,8 +27,10 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <SignAssembly>true</SignAssembly>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Tags>ado.net;configuration;database;provider;sql</Tags>
         <TargetFrameworks>netstandard2.1</TargetFrameworks>
-        <Version>1.0.0-preview8</Version>
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <VersionSuffix>preview9</VersionSuffix>
     </PropertyGroup>
     <Choose>
         <When Condition="'$(Configuration)' == 'Release'">
