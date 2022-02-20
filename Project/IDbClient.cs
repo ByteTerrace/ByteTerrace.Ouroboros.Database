@@ -51,15 +51,17 @@ public interface IDbClient : IAsyncDisposable, IDisposable
     private static DbResult CreateResult(IDbCommand command, int resultCode) {
         var outputParameters = new List<DbParameter>();
 
-        foreach (IDbDataParameter parameter in command.Parameters) {
-            var parameterDirection = parameter.Direction;
+        foreach (IDbDataParameter? parameter in command.Parameters) {
+            if (parameter is not null) {
+                var parameterDirection = parameter.Direction;
 
-            if (parameterDirection is (ParameterDirection.InputOutput or ParameterDirection.Output)) {
-                outputParameters.Add(item: DbParameter.New(dbDataParameter: parameter));
-            }
+                if (parameterDirection is (ParameterDirection.InputOutput or ParameterDirection.Output)) {
+                    outputParameters.Add(item: DbParameter.New(dbDataParameter: parameter));
+                }
 
-            if (ParameterDirection.ReturnValue == parameterDirection) {
-                resultCode = ((int)parameter.Value!);
+                if (ParameterDirection.ReturnValue == parameterDirection) {
+                    resultCode = ((int)parameter.Value!);
+                }
             }
         }
 
@@ -256,14 +258,9 @@ public interface IDbClient : IAsyncDisposable, IDisposable
                     schemaName: schemaName
                 )
             );
-        using var enumerator = EnumerateResultSets(reader: reader)
-            .GetEnumerator();
 
-        if (enumerator.MoveNext()) {
-            foreach (var row in enumerator.Current) {
-                yield return row;
-            }
-        }
+        return EnumerateResultSets(reader: reader)
+            .SelectMany(selector: resultSet => resultSet);
     }
     /// <summary>
     /// Creates a new database reader from the specified table or view name and then enumerates each row asynchronously.
@@ -285,19 +282,15 @@ public interface IDbClient : IAsyncDisposable, IDisposable
                 )
             )
             .ConfigureAwait(continueOnCapturedContext: false);
-        var enumerator = EnumerateResultSetsAsync(
+
+        await foreach (var row in EnumerateResultSetsAsync(
                 cancellationToken: cancellationToken,
                 reader: dataReader
             )
-            .GetAsyncEnumerator(cancellationToken: cancellationToken);
-
-        if (await enumerator
-            .MoveNextAsync(cancellationToken: cancellationToken)
+            .SelectMany(selector: resultSet => resultSet)
             .ConfigureAwait(continueOnCapturedContext: false)
         ) {
-            foreach (var row in enumerator.Current) {
-                yield return row;
-            }
+            yield return row;
         }
     }
     /// <summary>
