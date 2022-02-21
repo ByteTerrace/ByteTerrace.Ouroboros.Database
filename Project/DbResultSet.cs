@@ -42,13 +42,17 @@ public readonly record struct DbResultSet(
                 name: fieldName,
                 ordinal: i
             );
-            fieldNameCounters[key: fieldName] += 1;
 
-            if (1 == fieldNameCounters[key: fieldName]) {
+            if (fieldNameCounters.TryAdd(
+                key: fieldName,
+                value: 0
+            )) {
                 fieldNameToOrdinalMap[key: fieldName] = i;
             }
             else {
-                fieldNameToOrdinalMap[key: $"{fieldName}_{i}"] = i;
+                var fieldNameCount = fieldNameCounters[key: fieldName] += 1;
+
+                fieldNameToOrdinalMap[key: $"{fieldName}_{fieldNameCount}"] = i;
             }
         }
 

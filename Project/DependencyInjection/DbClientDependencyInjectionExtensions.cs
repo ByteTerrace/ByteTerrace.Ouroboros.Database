@@ -29,11 +29,14 @@ public static class DbClientDependencyInjectionExtensions
             implementationFactory: serviceProvider =>
                 serviceProvider.GetRequiredService<ServiceProviderDbClientFactory<DbClient, DbClientOptions>>()
         );
-        services.TryAddSingleton<ServiceProviderDbClientFactory<TClient, TClientOptions>>();
-        services.TryAddSingleton<IDbClientFactory>(
-            implementationFactory: serviceProvider =>
-                serviceProvider.GetRequiredService<ServiceProviderDbClientFactory<TClient, TClientOptions>>()
-        );
+
+        if (typeof(TClient) != typeof(DbClient)) {
+            services.TryAddSingleton<ServiceProviderDbClientFactory<TClient, TClientOptions>>();
+            services.TryAddSingleton<IDbClientFactory>(
+                implementationFactory: serviceProvider =>
+                    serviceProvider.GetRequiredService<ServiceProviderDbClientFactory<TClient, TClientOptions>>()
+            );
+        }
 
         return services;
     }
