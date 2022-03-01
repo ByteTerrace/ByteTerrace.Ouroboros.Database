@@ -10,7 +10,7 @@ public interface IDbClientConfigurationRefresher
     /// <summary>
     /// The database client factory that will be used when constructing <see cref="IDbClient"/> instances.
     /// </summary>
-    IDbClientFactory ClientFactory { get; set; }
+    IDbClientFactory<DbClient> ClientFactory { get; set; }
     /// <summary>
     /// Gets the latest configuration values asynchronously.
     /// </summary>

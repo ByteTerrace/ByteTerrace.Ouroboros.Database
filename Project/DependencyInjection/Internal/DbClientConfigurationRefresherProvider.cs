@@ -10,7 +10,7 @@ internal sealed class DbClientConfigurationRefresherProvider : IDbClientConfigur
     public IEnumerable<IDbClientConfigurationRefresher> Refreshers { get; init; }
 
     public DbClientConfigurationRefresherProvider(
-        IDbClientFactory clientFactory,
+        IDbClientFactory<DbClient> clientFactory,
         IConfiguration configuration
     ) {
         var configurationRoot = configuration as IConfigurationRoot;

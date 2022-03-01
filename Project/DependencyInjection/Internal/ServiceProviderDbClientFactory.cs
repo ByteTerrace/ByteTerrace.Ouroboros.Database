@@ -6,7 +6,7 @@ using Microsoft.Toolkit.Diagnostics;
 namespace ByteTerrace.Ouroboros.Database;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
-internal sealed class ServiceProviderDbClientFactory<TClient, TClientOptions> : IDbClientFactory, IDbConnectionFactory
+internal sealed class ServiceProviderDbClientFactory<TClient, TClientOptions> : IDbClientFactory<TClient>, IDbConnectionFactory
 #pragma warning restore CA1812 // Avoid uninstantiated internal classes
     where TClient : DbClient
     where TClientOptions : DbClientOptions

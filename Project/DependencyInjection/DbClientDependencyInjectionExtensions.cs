@@ -25,14 +25,14 @@ public static class DbClientDependencyInjectionExtensions
             .AddOptions();
 
         services.TryAddSingleton<ServiceProviderDbClientFactory<DbClient, DbClientOptions>>();
-        services.TryAddSingleton<IDbClientFactory>(
+        services.TryAddSingleton<IDbClientFactory<DbClient>>(
             implementationFactory: serviceProvider =>
                 serviceProvider.GetRequiredService<ServiceProviderDbClientFactory<DbClient, DbClientOptions>>()
         );
 
         if (typeof(TClient) != typeof(DbClient)) {
             services.TryAddSingleton<ServiceProviderDbClientFactory<TClient, TClientOptions>>();
-            services.TryAddSingleton<IDbClientFactory>(
+            services.TryAddSingleton<IDbClientFactory<TClient>>(
                 implementationFactory: serviceProvider =>
                     serviceProvider.GetRequiredService<ServiceProviderDbClientFactory<TClient, TClientOptions>>()
             );
@@ -75,7 +75,7 @@ public static class DbClientDependencyInjectionExtensions
         );
 
     /// <summary>
-    /// Adds the <see cref="IDbClientFactory"/> and related services to the <see cref="IServiceCollection"/>.
+    /// Adds the <see cref="IDbClientFactory{TClient}"/> and related services to the <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="connectionName">The name of the database connection.</param>
     /// <param name="services">The collection of services that will be appended to.</param>
@@ -103,7 +103,7 @@ public static class DbClientDependencyInjectionExtensions
             );
     }
     /// <summary>
-    /// Adds the <see cref="IDbClientFactory"/> and related services to the specified <see cref="IServiceCollection"/>.
+    /// Adds the <see cref="IDbClientFactory{TClient}"/> and related services to the specified <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="connectionName">The name of the database connection.</param>
     /// <param name="services">The collection of services that will be appended to.</param>

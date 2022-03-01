@@ -30,7 +30,7 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <TargetFrameworks>netstandard2.1</TargetFrameworks>
         <VersionPrefix>1.0.0</VersionPrefix>
-        <VersionSuffix>preview12</VersionSuffix>
+        <VersionSuffix>preview13</VersionSuffix>
     </PropertyGroup>
     <Choose>
         <When Condition="'$(Configuration)' == 'Release'">

@@ -9,7 +9,7 @@ namespace ByteTerrace.Ouroboros.Database;
 internal sealed class DbClientConfigurationProvider : ConfigurationProvider, IDbClientConfigurationRefresher
 {
     public static DbClientConfigurationProvider New(
-        IDbClientFactory clientFactory,
+        IDbClientFactory<DbClient> clientFactory,
         string name,
         DbClientConfigurationSourceOptions options
     ) =>
@@ -19,12 +19,12 @@ internal sealed class DbClientConfigurationProvider : ConfigurationProvider, IDb
             options: options
         );
 
-    public IDbClientFactory ClientFactory { get; set; }
+    public IDbClientFactory<DbClient> ClientFactory { get; set; }
     public string Name { get; set; }
     public DbClientConfigurationSourceOptions Options { get; set; }
 
     private DbClientConfigurationProvider(
-        IDbClientFactory clientFactory,
+        IDbClientFactory<DbClient> clientFactory,
         string name,
         DbClientConfigurationSourceOptions options
     ) {

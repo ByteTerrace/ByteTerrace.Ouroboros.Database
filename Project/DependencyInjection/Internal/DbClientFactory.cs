@@ -1,7 +1,7 @@
 ﻿using Microsoft.Toolkit.Diagnostics;
 
 namespace ByteTerrace.Ouroboros.Database;
-internal sealed class DbClientFactory : IDbClientFactory, IDbConnectionFactory
+internal sealed class DbClientFactory : IDbClientFactory<DbClient>, IDbConnectionFactory
 {
     public static DbClientFactory New(Action<DbClientOptions> optionsAction) =>
         new(optionsAction: optionsAction);

@@ -3,7 +3,7 @@
 /// <summary>
 /// Exposes operations for constructing instances of the <see cref="DbClient"/> class.
 /// </summary>
-public interface IDbClientFactory
+public interface IDbClientFactory<TClient> where TClient : DbClient
 {
     /// <summary>
     /// Initializes a new instance of the database client from the specified name.
