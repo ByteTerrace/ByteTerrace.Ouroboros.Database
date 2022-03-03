@@ -9,6 +9,7 @@
         <Copyright>Copyright ©2022 ByteTerrace</Copyright>
         <DelaySign>false</DelaySign>
         <Deterministic>true</Deterministic>
+        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
         <ImplicitUsings>enable</ImplicitUsings>
