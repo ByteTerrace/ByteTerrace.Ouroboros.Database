@@ -14,7 +14,7 @@ _ = client
     );
 ```
 
-## ASP.NET Core (Version 6) Integration
+## ASP.NET Core Integration
 **appsettings.json** (or equivalent)
 ```
 {
@@ -43,7 +43,7 @@ builder
     .AddDbClients(configuration: builder.Configuration);
 ```
 
-**ValuesController.cs**
+**ExampleController.cs**
 ```
 using ByteTerrace.Ouroboros.Database;
 using Microsoft.AspNetCore.Authorization;
@@ -55,9 +55,9 @@ namespace MyNamespace
     [ApiController]
     public class ExampleController : ControllerBase
     {
-        public IDbClientFactory DbClientFactory { get; }
+        public IDbClientFactory<DbClient> DbClientFactory { get; }
 
-        public ExampleController(IDbClientFactory dbClientFactory) {
+        public ExampleController(IDbClientFactory<DbClient> dbClientFactory) {
             DbClientFactory = dbClientFactory;
         }
 
